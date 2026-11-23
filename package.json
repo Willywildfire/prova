@@ -1,0 +1,16 @@
+{
+  "name": "primer-pwa",
+  "version": "11.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Rutina A/B de quatre dies i mapa de recuperació interactiu",
+  "scripts": {
+    "start": "python3 -m http.server 3000 --bind 0.0.0.0",
+    "test": "node --test tests/*.test.js",
+    "test:ui": "node tests/mobile.e2e.mjs && node tests/strength.e2e.mjs && node tests/overview.e2e.mjs && node tests/history-edit.e2e.mjs && node tests/post-set.e2e.mjs && node tests/theme.e2e.mjs",
+    "build:portable": "python3 tools/build_portable.py"
+  },
+  "devDependencies": {
+    "playwright": "1.65.1"
+  }
+}

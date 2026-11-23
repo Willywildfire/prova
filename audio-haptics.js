@@ -1,0 +1,7 @@
+let ctx,enabled=true;
+export function setAudio(value){enabled=value}
+export function initAudio(){try{ctx??=new (window.AudioContext||window.webkitAudioContext)();ctx.resume()}catch{}}
+function tone(freq,duration=.11,type='sine',delay=0,volume=.13){if(!enabled||!ctx)return;const t=ctx.currentTime+delay,o=ctx.createOscillator(),g=ctx.createGain(),f=ctx.createBiquadFilter();o.type=type;o.frequency.value=freq;f.type='lowpass';f.frequency.value=2400;g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(volume,t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+duration);o.connect(f).connect(g).connect(ctx.destination);o.start(t);o.stop(t+duration+.02)}
+export function sound(event){const patterns={tick:()=>tone(440),work:()=>tone(880,.28,'triangle'),switch:()=>{tone(587.33,.1,'sawtooth');tone(440,.1,'sawtooth',.13)},mid:()=>{tone(659.25,.05,'sine',0,.045);tone(659.25,.05,'sine',.1,.045)},cue:()=>tone(523.25,.09,'sine',0,.035),rest:()=>[523.25,659.25,1046.5].forEach((f,i)=>tone(f,i===2?.22:.09,'triangle',i*.1)),pr:()=>[1174.66,1318.51,1567.98,2093].forEach((f,i)=>tone(f,.17,'square',i*.13,.07)),tempo:()=>tone(1200,.018,'triangle',0,.045)};patterns[event]?.();const vib={tick:[70],work:[250],switch:[100,60,100],mid:[40,50,40],rest:[500],pr:[150,60,150,60,400]};if(enabled&&vib[event])navigator.vibrate?.(vib[event])}
+let lock;export async function wake(){try{if(document.visibilityState==='visible')lock=await navigator.wakeLock?.request('screen')}catch{}}
+export function release(){lock?.release();lock=null}
